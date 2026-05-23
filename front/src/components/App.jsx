@@ -5,13 +5,13 @@ import { Contentes } from "./Contentes";
 import { Video } from "./Video";
 
 function App() {
-  const [message, setMessage] = useState();
+  // const [message, setMessage] = useState();
 
-  useEffect(() => {
-    fetch("/api")
-      .then((res) => res.text())
-      .then((data) => setMessage(data));
-  }, []);
+  // useEffect(() => {
+  //   fetch("/api")
+  //     .then((res) => res.text())
+  //     .then((data) => setMessage(data));
+  // }, []);
 
   return (
     <>

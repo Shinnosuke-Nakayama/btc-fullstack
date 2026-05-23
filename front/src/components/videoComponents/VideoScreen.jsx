@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import "./video.css";
 
 export function VideoScreen() {
-  const drawCanvas = useRef(null);
+  //キャンバス内に動画を再生
   const videoCanvas = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const video = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   function handleClick() {
     const nextIsPlaying = !isPlaying;
@@ -17,15 +17,17 @@ export function VideoScreen() {
       video.current.pause();
     }
   }
-
   useEffect(() => {
     setInterval(function () {
       const canvas = videoCanvas.current;
       const videoImg = video.current;
-      canvas.getContext("2d").drawImage(videoImg, 0, 0, 300, 200);
+      canvas.getContext("2d").drawImage(videoImg, 0, 0, 500, 300);
     }, 1000 / 30);
   }, []);
+  //
 
+  //   キャンバス内に図形を描画
+  const drawCanvas = useRef(null);
   useEffect(() => {
     let isDragging = false;
     let dragStartPoint = null;
@@ -115,26 +117,27 @@ export function VideoScreen() {
       canvas.removeEventListener("pointerleave", handlepointerUp);
     };
   }, []);
+  //
 
   return (
     <>
       <button className="btn" onClick={handleClick}>
         {isPlaying ? "Pause" : "Play"}{" "}
       </button>
-      <video
-        ref={video}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        width={500}
-        height={300}
-        className="video"
-      >
-        <source
-          src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
-          type="video/mp4"
-        />
-      </video>
       <div className="box1">
+        <video
+          ref={video}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          width={500}
+          height={300}
+          className="video"
+        >
+          <source
+            src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+            type="video/mp4"
+          />
+        </video>
         <canvas
           ref={videoCanvas}
           width={500}
