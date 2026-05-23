@@ -1,8 +1,10 @@
 import "../App.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, createContext } from "react";
 import { Login } from "./Login";
 import { Contentes } from "./Contentes";
 import { Video } from "./Video";
+import { state } from "./state";
+export const Context = createContext();
 
 function App() {
   // const [message, setMessage] = useState();
@@ -14,12 +16,12 @@ function App() {
   // }, []);
 
   return (
-    <>
+    <Context Provider value={state()}>
       {/* <div className="App">Message from the backend: {message}</div>
       <Login />
       <Contentes /> */}
       <Video />
-    </>
+    </Context>
   );
 }
 
