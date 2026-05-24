@@ -14,7 +14,10 @@ import {
 import { Context } from "../App";
 
 export function VideoScreen() {
-  //キャンバス内に動画を再生
+  const videoLinks = [
+    "https://shanabrian.com/web/javascript/media/sample.mp4",
+    "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+  ];
   const globalState = useContext(Context);
 
   const forcusData = {
@@ -80,9 +83,7 @@ export function VideoScreen() {
       clearInterval(timer);
     };
   }, [globalState.check]);
-  //
 
-  //   キャンバス内に図形を描画
   useEffect(() => {
     let isDragging = false;
     let dragStartPoint = null;
@@ -92,7 +93,7 @@ export function VideoScreen() {
     const context = canvas.getContext("2d");
     if (!context) return;
 
-    let circleOrigin = { x: 100, y: 100 }; //
+    let circleOrigin = { x: globalState.forcusX, y: globalState.forcusY }; //
 
     function draw(paramcircleOrigin) {
       if (!canvas) return;
@@ -149,6 +150,9 @@ export function VideoScreen() {
       });
       if (!movingcircleOrigin) return;
 
+      globalState.setForcusX((x) => movingcircleOrigin.x);
+      globalState.setForcusY((y) => movingcircleOrigin.y);
+
       // 描画
       draw(movingcircleOrigin);
     }
@@ -178,7 +182,6 @@ export function VideoScreen() {
       canvas.removeEventListener("pointerleave", handlepointerUp);
     };
   }, [globalState.check]);
-  //
 
   return (
     <>
@@ -190,13 +193,10 @@ export function VideoScreen() {
         height={300}
         className="video"
         onLoadedMetadata={(e) => {
-          globalState.setDuration((duration) => e.target.duration);
+          return globalState.setDuration((duration) => e.target.duration);
         }}
       >
-        <source
-          src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
-          type="video/mp4"
-        />
+        <source src={videoLinks[Math.round(Math.random())]} type="video/mp4" />
       </video>
       <div className="box1">
         <canvas
@@ -236,9 +236,6 @@ export function VideoScreen() {
         />
       </div>
       <Text>videoTime: {globalState.videoTime}</Text>
-      <Checkbox
-        onClick={(e) => globalState.setCheck((check) => e.target.checked)}
-      />
     </>
   );
 }
