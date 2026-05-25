@@ -21,8 +21,8 @@ export function Video() {
       >
         Upload
       </FileButton>
-      <VideoScreen key={globalState.videoSrc} />
-      <VideoEditer key={globalState.duration} />
+      <VideoScreen className="p" key={globalState.videoSrc} />
+      <VideoEditer className="p" key={globalState.duration} />
     </>
   );
 }

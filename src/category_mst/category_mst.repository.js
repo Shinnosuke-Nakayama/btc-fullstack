@@ -4,11 +4,7 @@ function createCategoryRepository(knex, table = "category_mst") {
     return result;
   };
 
-  const editdata = async (id) => {
-    const result = await knex(table).where("id", id);
-    return result[0];
-  };
-  return { categoryList, editdata };
+  return { categoryList };
 }
 
 module.exports = { createCategoryRepository };

@@ -25,6 +25,7 @@ export const state = () => {
     focus_start_time: 0,
     user_id: 0,
   });
+  const [categoryList, setCategoryList] = useState([]);
 
   return {
     drawCanvas,
@@ -46,5 +47,7 @@ export const state = () => {
     setVideoSrc,
     editData,
     setEditData,
+    categoryList,
+    setCategoryList,
   };
 };

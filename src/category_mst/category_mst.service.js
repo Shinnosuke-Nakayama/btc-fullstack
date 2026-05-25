@@ -3,10 +3,7 @@ function createCategoryService(repository) {
     return await repository.categoryList();
   };
 
-  const editdata = async (id) => {
-    return await repository.editdata(id);
-  };
-  return { categoryList, editdata };
+  return { categoryList };
 }
 
 module.exports = { createCategoryService };

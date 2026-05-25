@@ -1,3 +1,5 @@
+import { BrowserRouter } from "react-router-dom";
+import Router from "./Router/Router";
 import "../App.css";
 import { useEffect, useState, createContext } from "react";
 import { Login } from "./Login";
@@ -17,10 +19,13 @@ function App() {
 
   return (
     <Context Provider value={state()}>
-      {/* <div className="App">Message from the backend: {message}</div>
-      <Login />
-      <Contentes /> */}
-      <Video />
+      <BrowserRouter>
+        <Router />
+      </BrowserRouter>
+      {/* <div className="App">Message from the backend: {message}</div> */}
+      {/* <Login /> */}
+      {/* <Contentes /> */}
+      {/* <Video /> */}
     </Context>
   );
 }

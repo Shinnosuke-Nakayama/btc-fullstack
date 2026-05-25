@@ -15,22 +15,23 @@ import { Context } from "../App";
 
 export function VideoScreen() {
   const globalState = useContext(Context);
+  let forcusData;
 
   useEffect(() => {
-    let num = Math.floor(Math.random() * 6) + 1;
-    fetch(`/editdata/${num}`)
-      .then((res) => res.json())
-      .then((res) => globalState.setEditData((editData) => res.result.data));
-    // ここは閲覧時なのか、追加時なのかで切り替える
-    globalState.setVideoSrc((videoSrc) => globalState.editData.contents_path);
+    // let num = Math.floor(Math.random() * 6) + 1;
+    // fetch(`/editdata/${num}`)
+    //   .then((res) => res.json())
+    //   .then((res) => globalState.setEditData((editData) => res.result.data));
+    // // ここは閲覧時なのか、追加時なのかで切り替える
+    // globalState.setVideoSrc((videoSrc) => globalState.editData.contents_path);
+    forcusData = {
+      start: globalState.editData[0].focus_start_time,
+      end: globalState.editData[0].focus_end_time,
+      x: globalState.editData[0].focus_point_x,
+      y: globalState.editData[0].focus_point_y,
+    };
+    globalState.setVideoSrc((src) => globalState.editData[0].contents_path);
   }, []);
-
-  const forcusData = {
-    start: globalState.editData.focus_start_time,
-    end: globalState.editData.focus_end_time,
-    x: globalState.editData.focus_point_x,
-    y: globalState.editData.focus_point_y,
-  };
 
   function handleClick() {
     const nextIsPlaying = !globalState.isPlaying;
@@ -57,7 +58,7 @@ export function VideoScreen() {
       const context = canvas.getContext("2d");
       context.clearRect(0, 0, canvas.width, canvas.height);
     }
-  }, [globalState.videoTime, globalState.check]);
+  }, [globalState.editData]);
 
   useEffect(() => {
     const timer = setInterval(function () {
