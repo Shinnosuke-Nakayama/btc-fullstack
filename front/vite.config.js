@@ -9,10 +9,10 @@ export default defineConfig({
       "/categorys": {
         target: "http://localhost:3000",
       },
-      "/editdata": {
+      "/editdata/": {
         target: "http://localhost:3000",
       },
-      "/editdata/": {
+      "/editdata": {
         target: "http://localhost:3000",
       },
     },

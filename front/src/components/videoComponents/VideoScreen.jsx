@@ -18,7 +18,7 @@ export function VideoScreen() {
 
   useEffect(() => {
     let num = Math.floor(Math.random() * 6) + 1;
-    fetch(`/editdata/17`)
+    fetch(`/editdata/${num}`)
       .then((res) => res.json())
       .then((res) => globalState.setEditData((editData) => res.result.data));
     // ここは閲覧時なのか、追加時なのかで切り替える
