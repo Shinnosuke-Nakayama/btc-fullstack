@@ -11,7 +11,7 @@
     "db:seed": "knex seed:run",
     "db:seed-make": "knex seed:make",
     "db:reset": "knex migrate:rollback --all && knex migrate:latest && knex seed:run",
-    "build": "npm install && cd front && npm install && npm run build && rm -rf ../public && cp -r dist ../public"
+    "build": "npm install && cd front && npm install && npm run build && rm -rf ../public && cp -r dist ../public && npx knex migrate:latest --knexfile knexfile.js && npx knex seed:run --knexfile knexfile.js"
   },
   "keywords": [],
   "author": "",
