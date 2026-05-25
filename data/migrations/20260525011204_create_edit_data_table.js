@@ -20,10 +20,10 @@ exports.up = function (knex) {
     table.string("contents_status", 255).notNullable();
     table.string("contents_path").notNullable();
     table.string("comment", 500);
-    table.integer("focus_point_x").notNullable();
-    table.integer("focus_point_y").notNullable();
-    table.integer("focus_start_time").notNullable();
-    table.integer("focus_end_time").notNullable();
+    table.decimal("focus_point_x").notNullable();
+    table.decimal("focus_point_y").notNullable();
+    table.decimal("focus_start_time").notNullable();
+    table.decimal("focus_end_time").notNullable();
   });
 };
 

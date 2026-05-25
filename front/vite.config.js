@@ -6,7 +6,13 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/api": {
+      "/categorys": {
+        target: "http://localhost:3000",
+      },
+      "/editdata": {
+        target: "http://localhost:3000",
+      },
+      "/editdata/": {
         target: "http://localhost:3000",
       },
     },

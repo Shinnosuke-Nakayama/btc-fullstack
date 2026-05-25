@@ -15,10 +15,10 @@ exports.seed = async function (knex) {
       contents_path:
         "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
       comment: "いい感じに咲いてきています",
-      focus_point_x: 234,
-      focus_point_y: 235,
-      focus_start_time: 1,
-      focus_end_time: 4,
+      focus_point_x: 234.009,
+      focus_point_y: 235.007,
+      focus_start_time: 1.0008,
+      focus_end_time: 4.002,
     },
     {
       category_id: 1,

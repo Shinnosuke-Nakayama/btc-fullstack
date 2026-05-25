@@ -16,11 +16,20 @@ import { Context } from "../App";
 export function VideoScreen() {
   const globalState = useContext(Context);
 
+  useEffect(() => {
+    let num = Math.floor(Math.random() * 6) + 1;
+    fetch(`/editdata/17`)
+      .then((res) => res.json())
+      .then((res) => globalState.setEditData((editData) => res.result.data));
+    // ここは閲覧時なのか、追加時なのかで切り替える
+    globalState.setVideoSrc((videoSrc) => globalState.editData.contents_path);
+  }, []);
+
   const forcusData = {
-    start: 1.2,
-    end: 4,
-    x: 200,
-    y: 200,
+    start: globalState.editData.focus_start_time,
+    end: globalState.editData.focus_end_time,
+    x: globalState.editData.focus_point_x,
+    y: globalState.editData.focus_point_y,
   };
 
   function handleClick() {
