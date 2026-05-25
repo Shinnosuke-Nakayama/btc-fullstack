@@ -8,6 +8,7 @@ import {
   GridItem,
   Text,
   Slider,
+  Button,
 } from "@yamada-ui/react";
 import { Context } from "../App";
 
@@ -53,21 +54,32 @@ export function VideoEditer() {
         <></>
       </Grid>
 
-      {globalState.duration ? (
-        <Slider.Root
-          defaultValue={[0, globalState.duration]}
-          min={0}
-          max={globalState.duration}
-          step={0.0001}
-          onChange={(e) => setForcusTime((times) => [...e])}
-          onChangeEnd={(e) => {
-            setForcusTime((times) => [...e]);
-          }}
-          colorScheme={"green"}
-        />
-      ) : (
-        <></>
-      )}
+      <Slider.Root
+        defaultValue={[0, globalState.duration]}
+        min={0}
+        max={globalState.duration}
+        step={0.0001}
+        onChange={(e) => setForcusTime((times) => [...e])}
+        onChangeEnd={(e) => {
+          setForcusTime((times) => [...e]);
+        }}
+        colorScheme={"green"}
+      />
+      <Button
+        marginTop={50}
+        backgroundColor={"green"}
+        onClick={() => {
+          console.log(
+            globalState.videoSrc,
+            forcusTime[0],
+            forcusTime[1],
+            globalState.forcusX,
+            globalState.forcusY,
+          );
+        }}
+      >
+        Submit
+      </Button>
     </>
   );
 }

@@ -14,10 +14,6 @@ import {
 import { Context } from "../App";
 
 export function VideoScreen() {
-  const videoLinks = [
-    "https://shanabrian.com/web/javascript/media/sample.mp4",
-    "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-  ];
   const globalState = useContext(Context);
 
   const forcusData = {
@@ -196,7 +192,7 @@ export function VideoScreen() {
           return globalState.setDuration((duration) => e.target.duration);
         }}
       >
-        <source src={videoLinks[Math.round(Math.random())]} type="video/mp4" />
+        <source src={globalState.videoSrc} type="video/mp4" />
       </video>
       <div className="box1">
         <canvas

@@ -10,6 +10,8 @@ export const state = () => {
   const [check, setCheck] = useState(false);
   const [forcusX, setForcusX] = useState(100);
   const [forcusY, setForcusY] = useState(100);
+  const [videoSrc, setVideoSrc] = useState();
+  const [list, setList] = useState([]);
 
   return {
     drawCanvas,
@@ -27,5 +29,9 @@ export const state = () => {
     setForcusX,
     forcusY,
     setForcusY,
+    videoSrc,
+    setVideoSrc,
+    list,
+    setList,
   };
 };
