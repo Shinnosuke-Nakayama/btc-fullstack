@@ -9,6 +9,7 @@ import {
   Text,
   Slider,
   Button,
+  Modal,
 } from "@yamada-ui/react";
 import { Context } from "../App";
 import {} from "react";
@@ -20,6 +21,7 @@ export function VideoEditer({ setCheck }) {
   const refTextArea = useRef("");
   const [radioValue, setRadioValue] = useState("");
   const [forcusTime, setForcusTime] = useState([0, 0]);
+  const [isLoding, setIsLoding] = useState(false);
   const navigate = useNavigate();
 
   const status = useMemo(
@@ -54,20 +56,30 @@ export function VideoEditer({ setCheck }) {
       focus_start_time: forcusTime[0],
       user_id: 3,
     };
-
-    await uploadVideo(globalState.fileName.current.files[0]);
-
-    let res = await fetch("/editdatapost", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(req),
-    });
-
-    console.log(res);
+    try {
+      setIsLoding((is) => true);
+      await uploadVideo(globalState.fileName.current.files[0]);
+      let res = await fetch("/editdatapost", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(req),
+      });
+      console.log(res);
+      setIsLoding((is) => false);
+    } catch (e) {
+      setIsLoding((is) => false);
+      console.log(e);
+    }
   };
 
   return (
     <>
+      <Modal.Root
+        body="少々お待ちください！"
+        title="登録中です！"
+        open={isLoding}
+        withCloseButton={false}
+      />
       <RadioGroup.Root
         items={status}
         orientation="horizontal"

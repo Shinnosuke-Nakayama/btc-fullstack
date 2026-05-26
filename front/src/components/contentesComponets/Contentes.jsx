@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { Context } from "./App";
+import { Context } from "../App";
 import { List, Undo2Icon, IconButton, FilePlusIcon } from "@yamada-ui/react";
 import { useNavigate } from "react-router-dom";
 export function Contentes() {
@@ -12,7 +12,8 @@ export function Contentes() {
   useEffect(() => {
     fetch(`/categorys`)
       .then((res) => res.json())
-      .then((res) => setCategoryList((list) => res.data));
+      .then((res) => setCategoryList((list) => res.data))
+      .catch((e) => console.log(e));
   }, []);
 
   useEffect(() => {
@@ -21,7 +22,8 @@ export function Contentes() {
       .then((res) => res.json())
       .then((res) => {
         globalState.setEditData((editData) => res.result.data);
-      });
+      })
+      .catch((e) => console.log(e));
   }, [categoryId]);
 
   return (

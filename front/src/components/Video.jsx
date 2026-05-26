@@ -14,17 +14,19 @@ export function Video() {
     <>
       {/* ゆくゆくはヘッダーはコンポーネントを分ける */}
       <h2>Video</h2>
-      <FileButton
-        ref={globalState.fileName}
-        onChange={(e) => {
-          const file = e[0];
-          const URL = webkitURL;
-          const src = URL.createObjectURL(file);
-          globalState.setVideoSrc((videoSrc) => src);
-        }}
-      >
-        Upload
-      </FileButton>
+      {!globalState.editData[0].contents_path && (
+        <FileButton
+          ref={globalState.fileName}
+          onChange={(e) => {
+            const file = e[0];
+            const URL = webkitURL;
+            const src = URL.createObjectURL(file);
+            globalState.setVideoSrc((videoSrc) => src);
+          }}
+        >
+          Upload
+        </FileButton>
+      )}
       <IconButton
         icon={<Undo2Icon />}
         onClick={() => {

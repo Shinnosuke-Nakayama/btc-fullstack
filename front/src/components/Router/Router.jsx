@@ -1,6 +1,6 @@
 import { useRoutes } from "react-router-dom";
 import { Video } from "../Video";
-import { Contentes } from "../Contentes";
+import { Contentes } from "../contentesComponets/Contentes";
 
 const Router = () => {
   const routingConfig = [

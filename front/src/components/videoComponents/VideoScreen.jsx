@@ -9,6 +9,7 @@ import {
   Slider,
   Checkbox,
   VStack,
+  Modal,
 } from "@yamada-ui/react";
 
 import { Context } from "../App";
@@ -22,19 +23,34 @@ export function VideoScreen({ check, setCheck }) {
   const videoCanvas = useRef(null); //a
   const [videoTime, setVideoTime] = useState(0.0); //a
   const [isPlaying, setIsPlaying] = useState(false); //a
-  let forcusData;
+  const [isLoding, setIsLoding] = useState(true);
+  const [forcusData, setFocusData] = useState({
+    start: globalState.editData[0].focus_start_time,
+    end: globalState.editData[0].focus_end_time,
+    x: globalState.editData[0].focus_point_x,
+    y: globalState.editData[0].focus_point_y,
+  });
 
   useEffect(() => {
-    globalState.editData[0].contents_path &&
-      s3GetSignedUrl(globalState.editData[0].contents_path).then((res) =>
-        globalState.setVideoSrc((src) => res),
-      );
-    forcusData = {
+    try {
+      if (globalState.editData[0].contents_path) {
+        s3GetSignedUrl(globalState.editData[0].contents_path).then((res) =>
+          globalState.setVideoSrc((src) => res),
+        );
+      } else {
+        setIsLoding((is) => false);
+      }
+    } catch (e) {
+      console.log(e);
+      setIsLoding((is) => false);
+    }
+
+    setFocusData((data) => ({
       start: globalState.editData[0].focus_start_time,
       end: globalState.editData[0].focus_end_time,
       x: globalState.editData[0].focus_point_x,
       y: globalState.editData[0].focus_point_y,
-    };
+    }));
   }, []);
 
   async function handleClick() {
@@ -52,6 +68,7 @@ export function VideoScreen({ check, setCheck }) {
     if (check) return;
     const dCanvas = drawCanvas.current;
     const context = dCanvas.getContext("2d");
+    if (!forcusData) return;
     if (!(forcusData.start < videoTime && videoTime < forcusData.end)) {
       const canvas = drawCanvas.current;
       const context = canvas.getContext("2d");
@@ -69,12 +86,12 @@ export function VideoScreen({ check, setCheck }) {
 
       setVideoTime((videoTime) => {
         if (check) return video.current.currentTime;
-        forcusData = {
+        setFocusData((data) => ({
           start: globalState.editData[0].focus_start_time,
           end: globalState.editData[0].focus_end_time,
           x: globalState.editData[0].focus_point_x,
           y: globalState.editData[0].focus_point_y,
-        };
+        }));
         if (forcusData.start < videoTime && videoTime < forcusData.end) {
           context.clearRect(0, 0, vCanvas.width, vCanvas.height);
           context.lineWidth = 8; //線の太さを変える
@@ -198,6 +215,12 @@ export function VideoScreen({ check, setCheck }) {
 
   return (
     <>
+      <Modal.Root
+        body="少々お待ちください！"
+        title="更新中です！"
+        open={isLoding}
+        withCloseButton={false}
+      />
       <video
         ref={video}
         onPlay={() => setIsPlaying(true)}
@@ -206,8 +229,8 @@ export function VideoScreen({ check, setCheck }) {
         height={300}
         className="video"
         onLoadedMetadata={(e) => {
-          console.log(e);
-          return globalState.setDuration((duration) => e.target.duration);
+          globalState.setDuration((duration) => e.target.duration);
+          setIsLoding((is) => false);
         }}
       >
         <source src={globalState.videoSrc} type="video/mp4" />
