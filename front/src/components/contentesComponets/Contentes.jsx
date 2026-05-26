@@ -1,7 +1,16 @@
 import { useEffect, useState, useContext } from "react";
 import { Context } from "../App";
-import { List, Undo2Icon, IconButton, FilePlusIcon } from "@yamada-ui/react";
+import {
+  List,
+  Undo2Icon,
+  IconButton,
+  FilePlusIcon,
+  Container,
+  Flex,
+  Text,
+} from "@yamada-ui/react";
 import { useNavigate } from "react-router-dom";
+
 export function Contentes() {
   const globalState = useContext(Context);
   const [categoryId, setCategoryId] = useState(0);
@@ -24,6 +33,7 @@ export function Contentes() {
         globalState.setEditData((editData) => res.result.data);
       })
       .catch((e) => console.log(e));
+    console.log(categoryId);
   }, [categoryId]);
 
   return (
@@ -40,21 +50,32 @@ export function Contentes() {
           }}
         ></IconButton>
       )}
-      <List.Root>
-        {isReturnIcon
-          ? categoryList.map((ele) => {
-              return (
-                <List.Item
+      <Flex gap="md">
+        {isReturnIcon &&
+          categoryList.map((ele) => {
+            return (
+              <Container.Root
+                variant={"elevated"}
+                width={"25%"}
+                margin={"6"}
+                backgroundColor={"gray.250"}
+                centerContent
+                key={ele.category_id}
+              >
+                <Container.Header
                   onClick={(e) => {
-                    setCategoryId((categoryId) => e.target.id);
+                    setCategoryId((categoryId) => ele.category_id);
                     setisReturnIcon((isReturnIcon) => false);
                   }}
-                  key={ele.category_id}
                   id={ele.category_id}
-                  fontSize={24}
-                  marginTop={30}
+                  fontSize={28}
+                  color={"darkblue"}
+                  flexDirection="column"
+                  cursor={"pointer"}
                 >
-                  {ele.category_name}
+                  <Text>{ele.category_name}</Text>
+                </Container.Header>
+                <Container.Body>
                   <IconButton
                     marginLeft={100}
                     icon={<FilePlusIcon />}
@@ -69,26 +90,52 @@ export function Contentes() {
                       navigate("/edit");
                     }}
                   ></IconButton>
-                </List.Item>
-              );
-            })
-          : globalState.editData.map((ele, i) => {
-              return (
-                <List.Item
+                </Container.Body>
+              </Container.Root>
+            );
+          })}
+        {!isReturnIcon &&
+          globalState.editData.map((ele, i) => {
+            return (
+              <Container.Root
+                variant={"elevated"}
+                margin={"6"}
+                backgroundColor={"gray.250"}
+                centerContent
+                key={ele.edit_id}
+              >
+                <Container.Header
+                  key={ele}
+                  id={ele.edit_id}
+                  fontSize={28}
+                  color={"darkblue"}
+                  color={
+                    ele.contents_status === "Good"
+                      ? "darkblue"
+                      : ele.contents_status === "Bad"
+                        ? "red"
+                        : "darkcyan"
+                  }
+                  flexDirection="column"
+                  cursor={"pointer"}
                   onClick={(e) => {
-                    globalState.setEditData((editData) =>
-                      editData.filter((a) => a.edit_id === Number(e.target.id)),
-                    );
+                    globalState.setEditData((editData) => {
+                      return editData.filter(
+                        (a) => a.edit_id === Number(ele.edit_id),
+                      );
+                    });
                     navigate("/edit");
                   }}
-                  key={i}
-                  id={ele.edit_id}
                 >
-                  {ele.create_date_at}
-                </List.Item>
-              );
-            })}
-      </List.Root>
+                  <Text>{ele.contents_status}</Text>
+                </Container.Header>
+                <Container.Body>
+                  <Text>{ele.create_date_at}</Text>
+                </Container.Body>
+              </Container.Root>
+            );
+          })}
+      </Flex>
     </>
   );
 }
