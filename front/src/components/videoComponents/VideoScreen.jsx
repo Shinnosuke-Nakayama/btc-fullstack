@@ -81,6 +81,7 @@ export function VideoScreen({ check, setCheck }) {
       const vCanvas = videoCanvas.current;
       const videoImg = video.current;
       const dCanvas = drawCanvas.current;
+      if (!dCanvas) return;
       const context = dCanvas.getContext("2d");
       vCanvas.getContext("2d").drawImage(videoImg, 0, 0, 500, 300);
 
@@ -97,7 +98,7 @@ export function VideoScreen({ check, setCheck }) {
           context.lineWidth = 8; //線の太さを変える
           context.strokeStyle = "#ff0000";
           context.beginPath();
-          context.arc(200, 200, 50, 0, Math.PI * 2, false);
+          context.arc(forcusData.x, forcusData.y, 50, 0, Math.PI * 2, false);
           context.stroke();
         } else if (videoTime >= forcusData.end) {
           const canvas = drawCanvas.current;

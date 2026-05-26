@@ -1,6 +1,6 @@
 import { VideoScreen } from "./videoComponents/VideoScreen";
 import { VideoEditer } from "./videoComponents/VideoEditer";
-import { useContext, useState } from "react";
+import { use, useContext, useState } from "react";
 import { FileButton, Undo2Icon, IconButton } from "@yamada-ui/react";
 import { Context } from "./App";
 import { useNavigate } from "react-router-dom";
@@ -8,13 +8,14 @@ import { useNavigate } from "react-router-dom";
 export function Video() {
   const globalState = useContext(Context);
   const [check, setCheck] = useState(false);
+  const [isUplodeBtn] = useState(globalState.editData[0].contents_path);
   const navigate = useNavigate();
 
   return (
     <>
       {/* ゆくゆくはヘッダーはコンポーネントを分ける */}
       <h2>Video</h2>
-      {!globalState.editData[0].contents_path && (
+      {!isUplodeBtn && (
         <FileButton
           ref={globalState.fileName}
           onChange={(e) => {
@@ -30,6 +31,22 @@ export function Video() {
       <IconButton
         icon={<Undo2Icon />}
         onClick={() => {
+          globalState.setEditData((data) => [
+            {
+              category_id: 0,
+              comment: "",
+              contents_path: null,
+              contents_status: "",
+              create_date_at: "",
+              edit_date_at: null,
+              edit_id: 0,
+              focus_end_time: 0,
+              focus_point_x: 0,
+              focus_point_y: 0,
+              focus_start_time: 0,
+              user_id: 0,
+            },
+          ]);
           navigate("/home");
           location.reload();
         }}

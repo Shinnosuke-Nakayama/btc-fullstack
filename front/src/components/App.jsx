@@ -1,10 +1,6 @@
 import { BrowserRouter } from "react-router-dom";
 import Router from "./Router/Router";
-import "../App.css";
-import { useEffect, useState, createContext } from "react";
-import { Login } from "./Login";
-import { Contentes } from "./contentesComponets/Contentes";
-import { Video } from "./Video";
+import { createContext } from "react";
 import { state } from "./state";
 export const Context = createContext();
 

@@ -22,6 +22,7 @@ export function VideoEditer({ setCheck }) {
   const [radioValue, setRadioValue] = useState("");
   const [forcusTime, setForcusTime] = useState([0, 0]);
   const [isLoding, setIsLoding] = useState(false);
+  const [isSubBtn] = useState(globalState.editData[0].contents_path);
   const navigate = useNavigate();
 
   const status = useMemo(
@@ -132,17 +133,19 @@ export function VideoEditer({ setCheck }) {
         }}
         colorScheme={"green"}
       />
-      <Button
-        marginTop={50}
-        backgroundColor={"green"}
-        onClick={async () => {
-          await editDataFetch();
-          navigate("/home");
-          // location.reload();
-        }}
-      >
-        Submit
-      </Button>
+      {!isSubBtn && (
+        <Button
+          marginTop={50}
+          backgroundColor={"green"}
+          onClick={async () => {
+            await editDataFetch();
+            navigate("/home");
+            // location.reload();
+          }}
+        >
+          Submit
+        </Button>
+      )}
     </>
   );
 }
