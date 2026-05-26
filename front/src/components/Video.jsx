@@ -1,17 +1,21 @@
 import { VideoScreen } from "./videoComponents/VideoScreen";
 import { VideoEditer } from "./videoComponents/VideoEditer";
-import { useContext } from "react";
-import { FileButton } from "@yamada-ui/react";
+import { useContext, useState } from "react";
+import { FileButton, Undo2Icon, IconButton } from "@yamada-ui/react";
 import { Context } from "./App";
+import { useNavigate } from "react-router-dom";
 
 export function Video() {
   const globalState = useContext(Context);
+  const [check, setCheck] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <>
       {/* ゆくゆくはヘッダーはコンポーネントを分ける */}
       <h2>Video</h2>
       <FileButton
+        ref={globalState.fileName}
         onChange={(e) => {
           const file = e[0];
           const URL = webkitURL;
@@ -21,8 +25,24 @@ export function Video() {
       >
         Upload
       </FileButton>
-      <VideoScreen className="p" key={globalState.videoSrc} />
-      <VideoEditer className="p" key={globalState.duration} />
+      <IconButton
+        icon={<Undo2Icon />}
+        onClick={() => {
+          navigate("/home");
+          location.reload();
+        }}
+      ></IconButton>
+      <VideoScreen
+        className="p"
+        key={globalState.videoSrc}
+        check={check}
+        setCheck={setCheck}
+      />
+      <VideoEditer
+        className="p"
+        key={globalState.duration}
+        setCheck={setCheck}
+      />
     </>
   );
 }

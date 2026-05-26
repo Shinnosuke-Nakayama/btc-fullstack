@@ -13,48 +13,47 @@ import {
 
 import { Context } from "../App";
 
-export function VideoScreen() {
+import { s3GetSignedUrl } from "../../../utils";
+
+export function VideoScreen({ check, setCheck }) {
   const globalState = useContext(Context);
+  const video = useRef(null); //a
+  const drawCanvas = useRef(null); //a
+  const videoCanvas = useRef(null); //a
+  const [videoTime, setVideoTime] = useState(0.0); //a
+  const [isPlaying, setIsPlaying] = useState(false); //a
   let forcusData;
 
   useEffect(() => {
-    // let num = Math.floor(Math.random() * 6) + 1;
-    // fetch(`/editdata/${num}`)
-    //   .then((res) => res.json())
-    //   .then((res) => globalState.setEditData((editData) => res.result.data));
-    // // ここは閲覧時なのか、追加時なのかで切り替える
-    // globalState.setVideoSrc((videoSrc) => globalState.editData.contents_path);
+    globalState.editData[0].contents_path &&
+      s3GetSignedUrl(globalState.editData[0].contents_path).then((res) =>
+        globalState.setVideoSrc((src) => res),
+      );
     forcusData = {
       start: globalState.editData[0].focus_start_time,
       end: globalState.editData[0].focus_end_time,
       x: globalState.editData[0].focus_point_x,
       y: globalState.editData[0].focus_point_y,
     };
-    globalState.setVideoSrc((src) => globalState.editData[0].contents_path);
   }, []);
 
-  function handleClick() {
-    const nextIsPlaying = !globalState.isPlaying;
-    globalState.setIsPlaying(nextIsPlaying);
+  async function handleClick() {
+    const nextIsPlaying = !isPlaying;
+    setIsPlaying(nextIsPlaying);
 
     if (nextIsPlaying) {
-      globalState.video.current.play();
+      video.current.play();
     } else {
-      globalState.video.current.pause();
+      video.current.pause();
     }
   }
 
   useEffect(() => {
-    if (globalState.check) return;
-    const dCanvas = globalState.drawCanvas.current;
+    if (check) return;
+    const dCanvas = drawCanvas.current;
     const context = dCanvas.getContext("2d");
-    if (
-      !(
-        forcusData.start < globalState.videoTime &&
-        globalState.videoTime < forcusData.end
-      )
-    ) {
-      const canvas = globalState.drawCanvas.current;
+    if (!(forcusData.start < videoTime && videoTime < forcusData.end)) {
+      const canvas = drawCanvas.current;
       const context = canvas.getContext("2d");
       context.clearRect(0, 0, canvas.width, canvas.height);
     }
@@ -62,14 +61,20 @@ export function VideoScreen() {
 
   useEffect(() => {
     const timer = setInterval(function () {
-      const vCanvas = globalState.videoCanvas.current;
-      const videoImg = globalState.video.current;
-      const dCanvas = globalState.drawCanvas.current;
+      const vCanvas = videoCanvas.current;
+      const videoImg = video.current;
+      const dCanvas = drawCanvas.current;
       const context = dCanvas.getContext("2d");
       vCanvas.getContext("2d").drawImage(videoImg, 0, 0, 500, 300);
 
-      globalState.setVideoTime((videoTime) => {
-        if (globalState.check) return globalState.video.current.currentTime;
+      setVideoTime((videoTime) => {
+        if (check) return video.current.currentTime;
+        forcusData = {
+          start: globalState.editData[0].focus_start_time,
+          end: globalState.editData[0].focus_end_time,
+          x: globalState.editData[0].focus_point_x,
+          y: globalState.editData[0].focus_point_y,
+        };
         if (forcusData.start < videoTime && videoTime < forcusData.end) {
           context.clearRect(0, 0, vCanvas.width, vCanvas.height);
           context.lineWidth = 8; //線の太さを変える
@@ -78,28 +83,30 @@ export function VideoScreen() {
           context.arc(200, 200, 50, 0, Math.PI * 2, false);
           context.stroke();
         } else if (videoTime >= forcusData.end) {
-          const canvas = globalState.drawCanvas.current;
+          const canvas = drawCanvas.current;
           const context = canvas.getContext("2d");
           context.clearRect(0, 0, canvas.width, canvas.height);
         }
-        return globalState.video.current.currentTime;
+        return video.current.currentTime;
       });
     }, 1000 / 30);
     return () => {
       clearInterval(timer);
     };
-  }, [globalState.check]);
+  }, [check]);
 
   useEffect(() => {
     let isDragging = false;
     let dragStartPoint = null;
 
-    const canvas = globalState.drawCanvas.current;
+    const canvas = drawCanvas.current;
     if (!canvas) return;
     const context = canvas.getContext("2d");
     if (!context) return;
 
-    let circleOrigin = { x: globalState.forcusX, y: globalState.forcusY }; //
+    let circleOrigin = check
+      ? { x: 100, y: 100 }
+      : { x: globalState.forcusX, y: globalState.forcusY };
 
     function draw(paramcircleOrigin) {
       if (!canvas) return;
@@ -124,12 +131,12 @@ export function VideoScreen() {
     }
 
     function reset() {
-      const canvas = globalState.drawCanvas.current;
+      const canvas = drawCanvas.current;
       const context = canvas.getContext("2d");
       context.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    globalState.check ? draw() : reset();
+    check ? draw() : reset();
 
     function getcircleOriginDragging(curpointerPos) {
       if (!isDragging) return;
@@ -187,18 +194,19 @@ export function VideoScreen() {
       canvas.removeEventListener("pointerup", handlepointerUp);
       canvas.removeEventListener("pointerleave", handlepointerUp);
     };
-  }, [globalState.check]);
+  }, [check]);
 
   return (
     <>
       <video
-        ref={globalState.video}
-        onPlay={() => globalState.setIsPlaying(true)}
-        onPause={() => globalState.setIsPlaying(false)}
+        ref={video}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
         width={500}
         height={300}
         className="video"
         onLoadedMetadata={(e) => {
+          console.log(e);
           return globalState.setDuration((duration) => e.target.duration);
         }}
       >
@@ -206,13 +214,13 @@ export function VideoScreen() {
       </video>
       <div className="box1">
         <canvas
-          ref={globalState.videoCanvas}
+          ref={videoCanvas}
           width={500}
           height={300}
           className="box2"
         ></canvas>
         <canvas
-          ref={globalState.drawCanvas}
+          ref={drawCanvas}
           width={500}
           height={300}
           className="box2"
@@ -220,8 +228,8 @@ export function VideoScreen() {
       </div>
       <div className="contents">
         <IconButton
-          icon={globalState.isPlaying ? <PauseIcon /> : <PlayIcon />}
-          backgroundColor={globalState.isPlaying ? "red" : "blue"}
+          icon={isPlaying ? <PauseIcon /> : <PlayIcon />}
+          backgroundColor={isPlaying ? "red" : "blue"}
           size="sm"
           className="item"
           onClick={handleClick}
@@ -230,18 +238,18 @@ export function VideoScreen() {
         <Slider.Root
           width={"420px"}
           className="item"
-          value={globalState.videoTime}
+          value={videoTime}
           min={0}
           max={globalState.duration}
           step={0.0001}
           onChange={(e) => {
-            globalState.video.current.currentTime = e;
-            return globalState.setVideoTime((videoTime) => e);
+            video.current.currentTime = e;
+            return setVideoTime((videoTime) => e);
           }}
           colorScheme={"blue"}
         />
       </div>
-      <Text>videoTime: {globalState.videoTime}</Text>
+      <Text>videoTime: {videoTime}</Text>
     </>
   );
 }

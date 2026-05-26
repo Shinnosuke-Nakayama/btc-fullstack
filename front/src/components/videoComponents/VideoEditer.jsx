@@ -1,4 +1,4 @@
-import { useMemo, useContext, useEffect, useState } from "react";
+import { useMemo, useContext, useEffect, useState, useRef } from "react";
 import {
   Radio,
   RadioGroup,
@@ -11,14 +11,16 @@ import {
   Button,
 } from "@yamada-ui/react";
 import { Context } from "../App";
-import { useRef } from "react";
+import {} from "react";
+import { useNavigate } from "react-router-dom";
+import { uploadVideo } from "../../../utils";
 
-export function VideoEditer() {
+export function VideoEditer({ setCheck }) {
   const globalState = useContext(Context);
   const refTextArea = useRef("");
   const [radioValue, setRadioValue] = useState("");
-
-  const [forcusTime, setForcusTime] = useState([0, globalState.duration]);
+  const [forcusTime, setForcusTime] = useState([0, 0]);
+  const navigate = useNavigate();
 
   const status = useMemo(
     () => [
@@ -29,11 +31,20 @@ export function VideoEditer() {
     [],
   );
 
+  useEffect(() => {
+    setForcusTime((time) => [
+      Number(globalState.editData[0].focus_start_time),
+      Number(globalState.editData[0].focus_end_time) || globalState.duration,
+    ]);
+    globalState.setForcusX((x) => globalState.editData[0].focus_point_x);
+    globalState.setForcusY((y) => globalState.editData[0].focus_point_y);
+  }, []);
+
   const editDataFetch = async () => {
     const req = {
-      category_id: 1,
+      category_id: globalState.editData[0].category_id,
       comment: refTextArea.current.value,
-      contents_path: globalState.videoSrc,
+      contents_path: globalState.fileName.current.files[0].name,
       contents_status: radioValue,
       create_date_at: new Date(),
       edit_date_at: null,
@@ -44,11 +55,15 @@ export function VideoEditer() {
       user_id: 3,
     };
 
+    await uploadVideo(globalState.fileName.current.files[0]);
+
     let res = await fetch("/editdatapost", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(req),
     });
+
+    console.log(res);
   };
 
   return (
@@ -57,11 +72,15 @@ export function VideoEditer() {
         items={status}
         orientation="horizontal"
         onChange={(e) => setRadioValue((value) => e)}
+        defaultValue={globalState.editData[0].contents_status}
       />
-      <Textarea size={"xl"} placeholder="comment" ref={refTextArea} />
-      <Checkbox
-        onClick={(e) => globalState.setCheck((check) => e.target.checked)}
-      >
+      <Textarea
+        size={"xl"}
+        placeholder="comment"
+        ref={refTextArea}
+        defaultValue={globalState.editData[0].comment}
+      />
+      <Checkbox onClick={(e) => setCheck((check) => e.target.checked)}>
         Focus
       </Checkbox>
 
@@ -84,7 +103,14 @@ export function VideoEditer() {
       </Grid>
 
       <Slider.Root
-        defaultValue={[0, globalState.duration]}
+        defaultValue={
+          Number(globalState.editData[0].focus_end_time)
+            ? [
+                Number(globalState.editData[0].focus_start_time),
+                globalState.editData[0].focus_end_time,
+              ]
+            : [globalState.duration * 0.3, globalState.duration * 0.6]
+        }
         min={0}
         max={globalState.duration}
         step={0.0001}
@@ -99,6 +125,8 @@ export function VideoEditer() {
         backgroundColor={"green"}
         onClick={async () => {
           await editDataFetch();
+          navigate("/home");
+          // location.reload();
         }}
       >
         Submit

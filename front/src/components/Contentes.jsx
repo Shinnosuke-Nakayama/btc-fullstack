@@ -1,51 +1,72 @@
 import { useEffect, useState, useContext } from "react";
 import { Context } from "./App";
-import { List, Undo2Icon, IconButton } from "@yamada-ui/react";
+import { List, Undo2Icon, IconButton, FilePlusIcon } from "@yamada-ui/react";
 import { useNavigate } from "react-router-dom";
-
 export function Contentes() {
   const globalState = useContext(Context);
-  const [num, setNum] = useState(0);
-  const [is, setIs] = useState(true);
+  const [categoryId, setCategoryId] = useState(0);
+  const [isReturnIcon, setisReturnIcon] = useState(true);
+  const [categoryList, setCategoryList] = useState([]); //a
   const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`/categorys`)
       .then((res) => res.json())
-      .then((res) => globalState.setCategoryList((list) => res.data));
+      .then((res) => setCategoryList((list) => res.data));
   }, []);
 
   useEffect(() => {
-    fetch(`/editdata/${num}`)
+    if (!categoryId) return;
+    fetch(`/editdata/${categoryId}`)
       .then((res) => res.json())
       .then((res) => {
         globalState.setEditData((editData) => res.result.data);
       });
-  }, [num]);
+  }, [categoryId]);
 
   return (
     <>
       {/* ゆくゆくはヘッダーはコンポーネントを分ける */}
       <h2>Contents</h2>
-      {!is && (
+      {!isReturnIcon && (
         <IconButton
           icon={<Undo2Icon />}
-          onClick={() => setIs((is) => true)}
+          onClick={() => {
+            setisReturnIcon((isReturnIcon) => true);
+            navigate("/home");
+            location.reload();
+          }}
         ></IconButton>
       )}
       <List.Root>
-        {is
-          ? globalState.categoryList.map((ele) => {
+        {isReturnIcon
+          ? categoryList.map((ele) => {
               return (
                 <List.Item
                   onClick={(e) => {
-                    setNum((num) => e.target.id);
-                    setIs((is) => false);
+                    setCategoryId((categoryId) => e.target.id);
+                    setisReturnIcon((isReturnIcon) => false);
                   }}
                   key={ele.category_id}
                   id={ele.category_id}
+                  fontSize={24}
+                  marginTop={30}
                 >
                   {ele.category_name}
+                  <IconButton
+                    marginLeft={100}
+                    icon={<FilePlusIcon />}
+                    backgroundColor={"green"}
+                    key={ele.category_name}
+                    id={ele.category_id}
+                    onClick={() => {
+                      globalState.setEditData((data) => {
+                        data[0].category_id = ele.category_id;
+                        return data;
+                      });
+                      navigate("/edit");
+                    }}
+                  ></IconButton>
                 </List.Item>
               );
             })

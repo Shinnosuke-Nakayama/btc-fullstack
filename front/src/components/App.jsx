@@ -9,23 +9,11 @@ import { state } from "./state";
 export const Context = createContext();
 
 function App() {
-  // const [message, setMessage] = useState();
-
-  // useEffect(() => {
-  //   fetch("/api")
-  //     .then((res) => res.text())
-  //     .then((data) => setMessage(data));
-  // }, []);
-
   return (
     <Context Provider value={state()}>
       <BrowserRouter>
         <Router />
       </BrowserRouter>
-      {/* <div className="App">Message from the backend: {message}</div> */}
-      {/* <Login /> */}
-      {/* <Contentes /> */}
-      {/* <Video /> */}
     </Context>
   );
 }
