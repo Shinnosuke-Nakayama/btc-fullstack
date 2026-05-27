@@ -8,9 +8,9 @@ import { CognitoIdentityClient } from "@aws-sdk/client-cognito-identity";
 import { fromCognitoIdentityPool } from "@aws-sdk/credential-provider-cognito-identity";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-const REGION = "ap-southeast-2";
-const BUCKET_NAME = "btcfullstack";
-const IDENTITY_POOL_ID = "ap-southeast-2:bb3c9257-be26-43c9-bb18-f98545705602";
+const REGION = import.meta.env.VITE_AWS_REGION;
+const BUCKET_NAME = import.meta.env.VITE_AWS_BUCKET_NAME;
+const IDENTITY_POOL_ID = import.meta.env.VITE_AWS_IDENTITY_POOL_ID;
 
 const s3Client = new S3Client({
   region: REGION,
