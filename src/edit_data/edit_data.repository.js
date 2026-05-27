@@ -1,7 +1,8 @@
 function createEditdataRepository(knex, table = "edit_data") {
   const editdata = async (id) => {
     const result = await knex(table).where("category_id", id);
-    return result;
+
+    return result.length <= 0 ? false : result;
   };
 
   const create = async (payload) => {

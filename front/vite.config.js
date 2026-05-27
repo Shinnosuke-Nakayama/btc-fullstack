@@ -15,9 +15,6 @@ export default defineConfig({
       "/editdata": {
         target: "http://localhost:3000",
       },
-      "/editdatapost": {
-        target: "http://localhost:3000",
-      },
     },
   },
 });

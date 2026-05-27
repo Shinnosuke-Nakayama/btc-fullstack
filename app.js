@@ -16,7 +16,7 @@ function buildApp() {
   app.get("/categorys", createCategoryController.categoryList);
   app.get("/editdata/:id", createEditdataController.editdata);
 
-  app.post("/editdatapost", createEditdataController.create);
+  app.post("/editdata", createEditdataController.create);
 
   return app;
 }

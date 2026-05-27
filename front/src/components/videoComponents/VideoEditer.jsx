@@ -62,12 +62,11 @@ export function VideoEditer({ setCheck }) {
     try {
       setIsLoding((is) => true);
       await uploadVideo(globalState.fileName.current.files[0]);
-      let res = await fetch("/editdatapost", {
+      let res = await fetch("/editdata", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(req),
       });
-      console.log(res);
       setIsLoding((is) => false);
     } catch (e) {
       setIsLoding((is) => false);

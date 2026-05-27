@@ -7,6 +7,7 @@ function createEditdataService(repository) {
 
   const create = async (payload) => {
     const created = await repository.create(payload);
+    if (!created) return { ok: false, status: 404, message: "id not found" };
     return { ok: true, created };
   };
   return { editdata, create };
