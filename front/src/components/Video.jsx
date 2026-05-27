@@ -74,7 +74,7 @@ export function Video() {
                 user_id: 0,
               },
             ]);
-            navigate("/home");
+            navigate("/");
             location.reload();
           }}
         ></IconButton>
