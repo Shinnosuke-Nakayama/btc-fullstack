@@ -43,6 +43,9 @@ npm install
 > [!TIP]
 > `/btc-fullstack` の階層ではバックエンドを、　`/btc-fullstack/front`の階層ではフロントエンドのパッケージ類をインストールしています
 
+そして、必要に応じて/btc-fullstack/front内に、
+AWS S3接続情報用の.envファイルを作成してください
+
 ## データベースのスキーマ
 
 下記のようになっています
