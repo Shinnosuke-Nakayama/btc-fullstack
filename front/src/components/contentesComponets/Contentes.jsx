@@ -8,6 +8,8 @@ import {
   Container,
   Flex,
   Text,
+  Grid,
+  Heading,
 } from "@yamada-ui/react";
 import { useNavigate } from "react-router-dom";
 
@@ -39,8 +41,19 @@ export function Contentes() {
   return (
     <>
       {/* ゆくゆくはヘッダーはコンポーネントを分ける */}
-      <h2>Contents</h2>
-      {!isReturnIcon && (
+      <Flex
+        marginTop={2}
+        marginBottom={4}
+        marginLeft={"auto"}
+        marginRight={"auto"}
+        placeContent={"center"}
+        placeItems={"center"}
+        backgroundColor={"white"}
+        width={"80%"}
+      >
+        <Heading as={"h1"} size={"6xl"}>
+          Contents
+        </Heading>
         <IconButton
           icon={<Undo2Icon />}
           onClick={() => {
@@ -48,15 +61,23 @@ export function Contentes() {
             navigate("/home");
             location.reload();
           }}
+          display={isReturnIcon && "hidden"}
+          backgroundColor={"amber"}
+          marginLeft={4}
         ></IconButton>
-      )}
-      <Flex gap="md">
+      </Flex>
+      <Grid
+        gap="md"
+        gridTemplateColumns="repeat(2, 30%)"
+        placeContent={"center"}
+        placeItems={"center"}
+      >
         {isReturnIcon &&
           categoryList.map((ele) => {
             return (
               <Container.Root
                 variant={"elevated"}
-                width={"25%"}
+                width={"70%"}
                 margin={"6"}
                 backgroundColor={"gray.250"}
                 centerContent
@@ -82,6 +103,7 @@ export function Contentes() {
                     backgroundColor={"green"}
                     key={ele.category_name}
                     id={ele.category_id}
+                    size={"lg"}
                     onClick={() => {
                       globalState.setEditData((data) => {
                         data[0].category_id = ele.category_id;
@@ -103,6 +125,7 @@ export function Contentes() {
                 backgroundColor={"gray.250"}
                 centerContent
                 key={ele.edit_id}
+                width={"80%"}
               >
                 <Container.Header
                   key={ele}
@@ -111,7 +134,7 @@ export function Contentes() {
                   color={"darkblue"}
                   color={
                     ele.contents_status === "Good"
-                      ? "darkblue"
+                      ? "blue"
                       : ele.contents_status === "Bad"
                         ? "red"
                         : "darkcyan"
@@ -135,7 +158,7 @@ export function Contentes() {
               </Container.Root>
             );
           })}
-      </Flex>
+      </Grid>
     </>
   );
 }

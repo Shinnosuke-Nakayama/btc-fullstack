@@ -16,7 +16,6 @@ const Router = () => {
       path: "/edit",
       element: <Video />,
     },
-    // { path: '*', element: <NotFound /> }
   ];
 
   const routing = useRoutes(routingConfig);

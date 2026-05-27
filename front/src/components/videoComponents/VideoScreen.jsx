@@ -10,6 +10,8 @@ import {
   Checkbox,
   VStack,
   Modal,
+  Flex,
+  Card,
 } from "@yamada-ui/react";
 
 import { Context } from "../App";
@@ -83,7 +85,7 @@ export function VideoScreen({ check, setCheck }) {
       const dCanvas = drawCanvas.current;
       if (!dCanvas) return;
       const context = dCanvas.getContext("2d");
-      vCanvas.getContext("2d").drawImage(videoImg, 0, 0, 500, 300);
+      vCanvas.getContext("2d").drawImage(videoImg, 0, 0, 640, 360);
 
       setVideoTime((videoTime) => {
         if (check) return video.current.currentTime;
@@ -222,58 +224,70 @@ export function VideoScreen({ check, setCheck }) {
         open={isLoding}
         withCloseButton={false}
       />
-      <video
-        ref={video}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        width={500}
-        height={300}
-        className="video"
-        onLoadedMetadata={(e) => {
-          globalState.setDuration((duration) => e.target.duration);
-          setIsLoding((is) => false);
-        }}
+      <Card.Root
+        // placeContent={"center"}
+        // placeItems={"center"}
+        variant={"elevated"}
+        paddingLeft={8}
+        paddingTop={8}
+        width={"95%"}
       >
-        <source src={globalState.videoSrc} type="video/mp4" />
-      </video>
-      <div className="box1">
-        <canvas
-          ref={videoCanvas}
-          width={500}
-          height={300}
-          className="box2"
-        ></canvas>
-        <canvas
-          ref={drawCanvas}
-          width={500}
-          height={300}
-          className="box2"
-        ></canvas>
-      </div>
-      <div className="contents">
-        <IconButton
-          icon={isPlaying ? <PauseIcon /> : <PlayIcon />}
-          backgroundColor={isPlaying ? "red" : "blue"}
-          size="sm"
-          className="item"
-          onClick={handleClick}
-          width={"5px"}
-        ></IconButton>
-        <Slider.Root
-          width={"420px"}
-          className="item"
-          value={videoTime}
-          min={0}
-          max={globalState.duration}
-          step={0.0001}
-          onChange={(e) => {
-            video.current.currentTime = e;
-            return setVideoTime((videoTime) => e);
-          }}
-          colorScheme={"blue"}
-        />
-      </div>
-      <Text>videoTime: {videoTime}</Text>
+        <Flex direction="column" className="container">
+          <video
+            ref={video}
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+            width={640}
+            height={360}
+            className="video layer"
+            onLoadedMetadata={(e) => {
+              globalState.setDuration((duration) => e.target.duration);
+              setIsLoding((is) => false);
+            }}
+          >
+            <source src={globalState.videoSrc} type="video/mp4" />
+          </video>
+          {/* <div className="box1"> */}
+          <canvas
+            ref={videoCanvas}
+            width={640}
+            height={360}
+            className="layer"
+          ></canvas>
+          <canvas
+            ref={drawCanvas}
+            width={640}
+            height={360}
+            className="layer"
+          ></canvas>
+          <Flex gap="md">
+            <IconButton
+              icon={isPlaying ? <PauseIcon /> : <PlayIcon />}
+              backgroundColor={isPlaying ? "red" : "blue"}
+              size="sm"
+              onClick={handleClick}
+              marginTop={380}
+              marginRight={30}
+              width={30}
+            ></IconButton>
+            <Slider.Root
+              marginTop={380}
+              width={500}
+              value={videoTime}
+              min={0}
+              max={globalState.duration}
+              step={0.0001}
+              onChange={(e) => {
+                video.current.currentTime = e;
+                return setVideoTime((videoTime) => e);
+              }}
+              colorScheme={"blue"}
+            />
+          </Flex>
+          {/* </div> */}
+          <Text>videoTime: {videoTime}</Text>
+        </Flex>
+      </Card.Root>
     </>
   );
 }

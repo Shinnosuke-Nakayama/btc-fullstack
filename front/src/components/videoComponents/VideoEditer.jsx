@@ -10,6 +10,8 @@ import {
   Slider,
   Button,
   Modal,
+  Card,
+  Flex,
 } from "@yamada-ui/react";
 import { Context } from "../App";
 import {} from "react";
@@ -81,71 +83,84 @@ export function VideoEditer({ setCheck }) {
         open={isLoding}
         withCloseButton={false}
       />
-      <RadioGroup.Root
-        items={status}
-        orientation="horizontal"
-        onChange={(e) => setRadioValue((value) => e)}
-        defaultValue={globalState.editData[0].contents_status}
-      />
-      <Textarea
-        size={"xl"}
-        placeholder="comment"
-        ref={refTextArea}
-        defaultValue={globalState.editData[0].comment}
-      />
-      <Checkbox onClick={(e) => setCheck((check) => e.target.checked)}>
-        Focus
-      </Checkbox>
+      <Card.Root
+        placeContent={"center"}
+        placeItems={"center"}
+        padding={35}
+        variant={"elevated"}
+        width={"90%"}
+      >
+        <Flex direction="column" width={"80%"}>
+          <RadioGroup.Root
+            items={status}
+            orientation="horizontal"
+            onChange={(e) => setRadioValue((value) => e)}
+            defaultValue={globalState.editData[0].contents_status}
+            marginBottom={6}
+            size={"lg"}
+          />
+          <Textarea
+            size={"2xl"}
+            placeholder="comment"
+            ref={refTextArea}
+            defaultValue={globalState.editData[0].comment}
+            marginBottom={4}
+            backgroundColor={"white"}
+          />
+          <Checkbox
+            onClick={(e) => setCheck((check) => e.target.checked)}
+            marginBottom={4}
+            fontSize={20}
+            size={"lg"}
+          >
+            Focus
+          </Checkbox>
 
-      <Grid templateColumns="repeat(2, 0.5fr)">
-        <GridItem>
-          <Text>x:{Math.floor(globalState.forcusX)}</Text>
-        </GridItem>
-        <GridItem>
-          <Text>y:{Math.floor(globalState.forcusY)}</Text>
-        </GridItem>
-        <>
-          <GridItem>
+          <Grid
+            templateColumns="repeat(2, 0.5fr)"
+            marginBottom={6}
+            fontSize={20}
+          >
+            <Text>x:{Math.floor(globalState.forcusX)}</Text>
+            <Text>y:{Math.floor(globalState.forcusY)}</Text>
             <Text>start:{forcusTime[0]}</Text>
-          </GridItem>
-          <GridItem>
             <Text>end: {forcusTime[1]}</Text>
-          </GridItem>
-        </>
-        <></>
-      </Grid>
+          </Grid>
 
-      <Slider.Root
-        defaultValue={
-          Number(globalState.editData[0].focus_end_time)
-            ? [
-                Number(globalState.editData[0].focus_start_time),
-                globalState.editData[0].focus_end_time,
-              ]
-            : [globalState.duration * 0.3, globalState.duration * 0.6]
-        }
-        min={0}
-        max={globalState.duration}
-        step={0.0001}
-        onChange={(e) => setForcusTime((times) => [...e])}
-        onChangeEnd={(e) => {
-          setForcusTime((times) => [...e]);
-        }}
-        colorScheme={"green"}
-      />
-      {!isSubBtn && (
-        <Button
-          marginTop={50}
-          backgroundColor={"green"}
-          onClick={async () => {
-            await editDataFetch();
-            navigate("/home");
-            // location.reload();
-          }}
-        >
-          Submit
-        </Button>
-      )}
+          <Slider.Root
+            defaultValue={
+              Number(globalState.editData[0].focus_end_time)
+                ? [
+                    Number(globalState.editData[0].focus_start_time),
+                    globalState.editData[0].focus_end_time,
+                  ]
+                : [globalState.duration * 0.3, globalState.duration * 0.6]
+            }
+            marginBottom={4}
+            min={0}
+            max={globalState.duration}
+            step={0.0001}
+            onChange={(e) => setForcusTime((times) => [...e])}
+            onChangeEnd={(e) => {
+              setForcusTime((times) => [...e]);
+            }}
+            colorScheme={"green"}
+          />
+          {!isSubBtn && (
+            <Button
+              marginTop={15}
+              backgroundColor={"green"}
+              onClick={async () => {
+                await editDataFetch();
+                navigate("/home");
+              }}
+              fontSize={24}
+            >
+              Submit
+            </Button>
+          )}
+        </Flex>
+      </Card.Root>
     </>
   );
 }

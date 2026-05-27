@@ -1,4 +1,4 @@
-.box1 {
+/* .box1 {
   background: aqua;
   position: relative;
   display: grid;
@@ -9,19 +9,28 @@
   position: absolute;
   border: solid black;
   grid-area: 1/2;
-}
+} */
 
 .video {
   display: none;
 }
 
-.contents {
+.container {
+  position: relative;
+}
+
+.layer {
+  position: absolute;
+  border: solid black;
+}
+
+/* .contents {
   display: flex;
   flex-wrap: wrap;
   width: 520px;
-}
+} */
 .item {
-  margin-top: 325px;
+  /* margin-top: 325px; */
   margin-left: 20px;
   width: calc(100% / 4);
   text-align: center;
