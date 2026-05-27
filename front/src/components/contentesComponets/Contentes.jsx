@@ -58,7 +58,7 @@ export function Contentes() {
           icon={<Undo2Icon />}
           onClick={() => {
             setisReturnIcon((isReturnIcon) => true);
-            navigate("/home");
+            navigate("/");
             location.reload();
           }}
           display={isReturnIcon && "hidden"}

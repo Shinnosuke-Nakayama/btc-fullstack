@@ -152,7 +152,7 @@ export function VideoEditer({ setCheck }) {
               backgroundColor={"green"}
               onClick={async () => {
                 await editDataFetch();
-                navigate("/home");
+                navigate("/");
               }}
               fontSize={24}
             >
