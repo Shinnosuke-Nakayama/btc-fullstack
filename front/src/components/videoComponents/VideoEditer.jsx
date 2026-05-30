@@ -16,7 +16,6 @@ import {
 import { Context } from "../App";
 import {} from "react";
 import { useNavigate } from "react-router-dom";
-import { uploadVideo } from "../../../utils";
 
 export function VideoEditer({ setCheck }) {
   const globalState = useContext(Context);
@@ -61,7 +60,14 @@ export function VideoEditer({ setCheck }) {
     };
     try {
       setIsLoding((is) => true);
-      await uploadVideo(globalState.fileName.current.files[0]);
+      let formData = new FormData();
+      formData.append("file", globalState.fileName.current.files[0]);
+      formData.append("fileName", globalState.fileName.current.files[0].name);
+      await fetch("/videos", {
+        method: "POST",
+        body: formData,
+      });
+
       let res = await fetch("/editdata", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

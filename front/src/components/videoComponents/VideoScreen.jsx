@@ -16,8 +16,6 @@ import {
 
 import { Context } from "../App";
 
-import { s3GetSignedUrl } from "../../../utils";
-
 export function VideoScreen({ check, setCheck }) {
   const globalState = useContext(Context);
   const video = useRef(null); //a
@@ -36,9 +34,11 @@ export function VideoScreen({ check, setCheck }) {
   useEffect(() => {
     try {
       if (globalState.editData[0].contents_path) {
-        s3GetSignedUrl(globalState.editData[0].contents_path).then((res) =>
-          globalState.setVideoSrc((src) => res),
-        );
+        fetch(`/videos/${globalState.editData[0].contents_path}`)
+          .then((res) => res.json())
+          .then((res) => {
+            globalState.setVideoSrc((src) => res.data);
+          });
       } else {
         setIsLoding((is) => false);
       }
@@ -46,7 +46,6 @@ export function VideoScreen({ check, setCheck }) {
       console.log(e);
       setIsLoding((is) => false);
     }
-
     setFocusData((data) => ({
       start: globalState.editData[0].focus_start_time,
       end: globalState.editData[0].focus_end_time,

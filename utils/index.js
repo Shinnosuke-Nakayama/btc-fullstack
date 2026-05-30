@@ -1,16 +1,18 @@
-import {
+const {
   S3Client,
   ListObjectsV2Command,
   GetObjectCommand,
   PutObjectCommand,
-} from "@aws-sdk/client-s3";
-import { CognitoIdentityClient } from "@aws-sdk/client-cognito-identity";
-import { fromCognitoIdentityPool } from "@aws-sdk/credential-provider-cognito-identity";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+} = require("@aws-sdk/client-s3");
+const { CognitoIdentityClient } = require("@aws-sdk/client-cognito-identity");
+const {
+  fromCognitoIdentityPool,
+} = require("@aws-sdk/credential-provider-cognito-identity");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
-const REGION = "ap-southeast-2";
-const BUCKET_NAME = "btcfullstack";
-const IDENTITY_POOL_ID = "ap-southeast-2:bb3c9257-be26-43c9-bb18-f98545705602";
+const REGION = process.env.AWS_REGION;
+const BUCKET_NAME = process.env.AWS_BUCKET_NAME;
+const IDENTITY_POOL_ID = process.env.AWS_IDENTITY_POOL_ID;
 
 const s3Client = new S3Client({
   region: REGION,
@@ -21,7 +23,7 @@ const s3Client = new S3Client({
   }),
 });
 
-export async function getPhotos() {
+async function getPhotos() {
   const command = new ListObjectsV2Command({
     Bucket: BUCKET_NAME,
   });
@@ -48,7 +50,7 @@ export async function getPhotos() {
   return photos;
 }
 
-export async function s3GetSignedUrl(key) {
+async function s3GetSignedUrl(key) {
   const command = new GetObjectCommand({
     Bucket: BUCKET_NAME,
     Key: key,
@@ -57,13 +59,15 @@ export async function s3GetSignedUrl(key) {
   return response;
 }
 
-export async function uploadVideo(file) {
+async function uploadVideo(file, fileName) {
   const command = new PutObjectCommand({
     Bucket: BUCKET_NAME,
-    Key: file.name,
-    Body: file,
+    Key: fileName,
+    Body: file[0].buffer,
   });
   const response = await s3Client.send(command);
   console.log(response);
   return response;
 }
+
+module.exports = { s3GetSignedUrl, uploadVideo };
